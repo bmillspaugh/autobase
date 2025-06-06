@@ -5,3 +5,4 @@ postgresql_data_dir: "/var/lib/postgresql/{{ postgresql_version }}/main"
 cluster_vip: "192.168.68.100"
 with_haproxy_load_balancing: true
 dcs_type: "etcd"
+patroni_etcd_hosts: []
