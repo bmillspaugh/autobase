@@ -6,3 +6,6 @@ cluster_vip: "192.168.68.100"
 with_haproxy_load_balancing: true
 dcs_type: "etcd"
 patroni_etcd_hosts: []
+patroni_restapi_listen_addr: "0.0.0.0" # Listen on all interfaces. Or use "{{ inventory_hostname }}" to listen on a specific IP address.
+patroni_restapi_port: 8008
+patroni_restapi_username: "patroni"
