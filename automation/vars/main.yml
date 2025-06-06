@@ -19,11 +19,6 @@ locale_gen:
 locale: "en_US.utf-8"
 pending_restart: true
 
-postgresql_databases:
-  - { name: "awareauth", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "postgres" }
-  - { name: "awareasset", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "postgres" }
-  - { name: "awareiot", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "postgres" }
-
 installation_method: "packages"
 postgresql_packages:
   - postgresql-{{ postgresql_version }}
@@ -35,3 +30,8 @@ postgresql_packages:
 
 postgresql_extensions:
   - { ext: "pg_cron", db: "postgres" }
+
+postgresql_databases:
+  - { name: "awareauth", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "postgres" }
+  - { name: "awareasset", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "postgres" }
+  - { name: "awareiot", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "postgres" }
