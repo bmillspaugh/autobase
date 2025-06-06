@@ -4,16 +4,16 @@
 192.168.68.103
 
 [balancers]
-192.168.68.101 #new_node=true
-192.168.68.102 #new_node=true
-192.168.68.103 #new_node=true
+192.168.68.101 new_node=true
+192.168.68.102 new_node=true
+192.168.68.103 new_node=true
 
 [master]
-192.168.68.101 hostname=pghost1 postgresql_exists=false #new_node=true
+192.168.68.101 hostname=pghost1 postgresql_exists=false new_node=true
 
 [replica]
-192.168.68.102 hostname=pghost2 postgresql_exists=false #new_node=true
-192.168.68.103 hostname=pghost3 postgresql_exists=false #new_node=true
+192.168.68.102 hostname=pghost2 postgresql_exists=false new_node=true
+192.168.68.103 hostname=pghost3 postgresql_exists=false new_node=true
 
 [postgres_cluster:children]
 master
