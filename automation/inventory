@@ -15,6 +15,9 @@
 #10.128.64.140
 #10.128.64.142
 #10.128.64.143
+192.168.68.101
+192.168.68.102
+192.168.68.103
 
 # if dcs_exists: false and dcs_type: "consul"
 [consul_instances]  # recommendation: 3 or 5-7 nodes
@@ -31,16 +34,22 @@
 #10.128.64.143 # balancer_tags="datacenter=dc1"
 #10.128.64.144 # balancer_tags="datacenter=dc2"
 #10.128.64.145 # balancer_tags="datacenter=dc2" new_node=true
+192.168.68.101
+192.168.68.102
+192.168.68.103
 
 # PostgreSQL nodes
 [master]
 #10.128.64.140 hostname=pgnode01 postgresql_exists=false # patroni_tags="datacenter=dc1"
+192.168.68.101 hostname=pghost1 postgresql_exists=false
 
 [replica]
 #10.128.64.142 hostname=pgnode02 postgresql_exists=false # patroni_tags="datacenter=dc1"
 #10.128.64.143 hostname=pgnode03 postgresql_exists=false # patroni_tags="datacenter=dc1"
 #10.128.64.144 hostname=pgnode04 postgresql_exists=false # patroni_tags="datacenter=dc2" patroni_replicatefrom="pgnode03"
 #10.128.64.145 hostname=pgnode04 postgresql_exists=false # patroni_tags="datacenter=dc2" new_node=true
+192.168.68.102 hostname=pghost2 postgresql_exists=false
+192.168.68.103 hostname=pghost3 postgresql_exists=false
 
 [postgres_cluster:children]
 master
@@ -49,10 +58,13 @@ replica
 # if pgbackrest_install: true and "repo_host" is set
 [pgbackrest]  # optional (Dedicated Repository Host)
 #10.128.64.110
+192.168.68.104
 
 [pgbackrest:vars]
 #ansible_user='postgres'
 #ansible_ssh_pass='secretpassword'
+ansible_user='pgadmin'
+ansible_ssh_pass='pgadmin'
 
 # Connection settings
 [all:vars]
@@ -62,3 +74,5 @@ ansible_ssh_port='22'
 #ansible_ssh_pass='secretpassword'  # "sshpass" package is required for use "ansible_ssh_pass"
 #ansible_ssh_private_key_file=
 #ansible_python_interpreter='/usr/bin/python3'
+ansible_user='pgadmin'
+ansible_ssh_pass='pgadmin'  # "sshpass" package is required for use "ansible_ssh_pass"

@@ -17,12 +17,12 @@ patroni_superuser_password: "" # Please specify a password. If not defined, will
 patroni_replication_username: "replicator"
 patroni_replication_password: "" # Please specify a password. If not defined, will be generated automatically during deployment.
 
-synchronous_mode: false # or 'true' for enable synchronous database replication
+synchronous_mode: true # or 'true' for enable synchronous database replication
 synchronous_mode_strict: false # if 'true' then block all client writes to the master, when a synchronous replica is not available
 synchronous_node_count: 1 # number of synchronous standby databases
 
 # Load Balancing
-with_haproxy_load_balancing: false # or 'true' if you want to install and configure the HAProxy load balancers
+with_haproxy_load_balancing: true # or 'true' if you want to install and configure the HAProxy load balancers
 haproxy_listen_port:
   master: 5000
   replicas: 5001
@@ -73,7 +73,7 @@ haproxy_timeout:
 #  \"request_size\":%U\
 #  }"
 
-cluster_vip: "" # IP address for client access to the databases in the cluster (optional).
+cluster_vip: "192.168.68.100" # IP address for client access to the databases in the cluster (optional).
 vip_interface: "{{ ansible_default_ipv4.interface }}" # interface name (e.g., "ens32").
 # Note: VIP-based solutions such as keepalived or vip-manager may not function correctly in cloud environments.
 
@@ -256,13 +256,19 @@ postgresql_users:
 #  - { name: "", password: "", flags: "NOSUPERUSER" }
 #  - { name: "", password: "", flags: "NOSUPERUSER" }
 #  - { name: "", password: "", flags: "NOLOGIN" }
+  - { name: "sqlinsertjobs", password: "sqlinsertjobs", flags: "LOGIN", role: "pg_write_all_data" }
+  - { name: "abmonitor", password: "abmonitor", flags: "LOGIN", role: "pg_monitor" } # monitoring Service Account
+  - { name: "ben", password: "ben", flags: "SUPERUSER" }
 
 # List of databases to be created
-postgresql_databases: []
+postgresql_databases:
 #  - { db: "mydatabase", encoding: "UTF8", lc_collate: "ru_RU.UTF-8", lc_ctype: "ru_RU.UTF-8", owner: "mydb-user" }
 #  - { db: "mydatabase2", encoding: "UTF8", lc_collate: "ru_RU.UTF-8", lc_ctype: "ru_RU.UTF-8", owner: "mydb-user", conn_limit: "50" }
 #  - { db: "", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "" }
 #  - { db: "", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "" }
+  - { db: "awareauth", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "postgres" }
+  - { db: "awareasset", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "postgres" }
+  - { db: "awareiot", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "postgres" }
 
 # List of schemas to be created
 postgresql_schemas: []
@@ -271,7 +277,7 @@ postgresql_schemas: []
 # List of privileges to be granted or revoked
 # https://docs.ansible.com/ansible/latest/collections/community/postgresql/postgresql_privs_module.html#examples
 # The db (which is the database to connect to) and role parameters are required
-postgresql_privs: []
+postgresql_privs:
 #  - { role: "test", privs: "SELECT,INSERT,UPDATE", type: "table", db: "test2", objs: "test" }  # grant SELECT, INSERT, UPDATE on a table to role test
 #  - { role: "test-user", privs: "ALL", type: "database", db: "test-db", objs: "test-db" }  # grant ALL on a database to role test-user
 #  - { role: "mydb-user", privs: "SELECT", type: "table", db: "mydb", objs: "my_table", schema: "my_schema" }  # grant SELECT on a table and schema
@@ -279,9 +285,10 @@ postgresql_privs: []
 #  - { role: "user, privs: "SELECT", type: "table", db: "mydb", objs: "table2", schema: "schema2", state: "absent" }  # revoke SELECT on a table2 and schema2
 #  - { role: "test, test2", privs: "CREATE", type: "database", db: "test2", objs: "test2" }  # grant CREATE on a database test2 to role test and test2
 #  - { role: "invnatom_ms", privs: "EXECUTE", type: "default_privs", db: "invnatom_db", schema: "invnatom", objs: "FUNCTIONS", target_roles: "invnatom_cd" }
+  - { role: "datajobs", privs: "SELECT,INSERT,UPDATE", type: "database", db: "awareiot", objs: "awareiot" }
 
 # List of database extensions to be created
-postgresql_extensions: []
+postgresql_extensions:
 #  - { ext: "pg_stat_statements", db: "postgres" }
 #  - { ext: "pg_stat_statements", db: "mydatabase" }
 #  - { ext: "pg_stat_statements", db: "mydatabase", schema: "myschema" }
@@ -291,6 +298,16 @@ postgresql_extensions: []
 #  - { ext: "pg_stat_kcache", db: "" }  # postgresql-<version>-pg-stat-kcache package is required
 #  - { ext: "", db: "" }
 #  - { ext: "", db: "" }
+  - { ext: "timescaledb", db: "awareiot" }
+  - { ext: "timescaledb_toolkit", db: "awareiot" }
+  - { ext: "timeseries", db: "awareiot" }
+  - { ext: "pg_cron", db: "postgres" }
+  - { ext: "pg_task", db: "postgres" }
+  - { ext: "pg_later", db: "postgres" }
+  - { ext: "pg_background", db: "postgres" }
+  - { ext: "pg_stat_monitor", db: "awareiot" }
+  - { ext: "pg_stat_statements", db: "awareiot" }
+  - { ext: "auto_explain", db: "awareiot" }
 
 # Example PostgreSQL parameters (stored in DCS)
 postgresql_parameters:
@@ -393,7 +410,7 @@ postgresql_parameters:
 # Set this variable to 'true' if you want the cluster to be automatically restarted
 # after changing the 'postgresql_parameters' variable that requires a restart in the 'config_pgcluster.yml' playbook.
 # By default, the cluster will not be automatically restarted.
-pending_restart: false
+pending_restart: true
 
 # specify additional hosts that will be added to the pg_hba.conf
 postgresql_pg_hba:
@@ -464,6 +481,9 @@ pgbouncer_pools:
 #  - { name: "mydatabase", dbname: "mydatabase", pool_parameters: "pool_size=20 pool_mode=transaction" }
 #  - { name: "", dbname: "", pool_parameters: "" }
 #  - { name: "", dbname: "", pool_parameters: "" }
+  - { name: "awareauth", dbname: "awareauth", pool_parameters: "" }
+  - { name: "awareasset", dbname: "awareasset", pool_parameters: "" }
+  - { name: "awareiot", dbname: "awareiot", pool_parameters: "" }
 
 ############################################################
 # Patroni parameters
@@ -597,7 +617,7 @@ pg_probackup_restore_command: "{{ pg_probackup_command_parts | join('') }}"
 pg_probackup_patroni_cluster_bootstrap_command: "{{ pg_probackup_command_parts | join('') }}"
 
 # WAL-G
-wal_g_install: false # or 'true'
+wal_g_install: true # or 'true'
 # renovate: datasource=github-releases depName=wal-g/wal-g extractVersion=^v(?<version>.*)$
 wal_g_version: 3.0.7
 wal_g_installation_method: "binary" # or "src" to build from source code
@@ -656,7 +676,7 @@ wal_g_cron_jobs:
     job: "{{ wal_g_delete_command | join('') }}"
 
 # pgBackRest
-pgbackrest_install: false # or 'true' to install and configure backups using pgBackRest
+pgbackrest_install: true # or 'true' to install and configure backups using pgBackRest
 pgbackrest_install_from_pgdg_repo: true # or 'false'
 pgbackrest_stanza: "{{ patroni_cluster_name }}" # specify your --stanza
 pgbackrest_repo_type: "posix" # or "s3", "gcs", "azure"
@@ -784,21 +804,25 @@ netdata_conf:
 ############################################################
 
 # DNS servers (/etc/resolv.conf)
-nameservers: []
+nameservers:
 #  - "8.8.8.8"  # example (Google Public DNS)
 #  - "9.9.9.9"  # (Quad9 Public DNS)
+  - "8.8.8.8"  # Google Public DNS
+  - "8.8.4.4"  # Google Public DNS
 
 # /etc/hosts (optional)
 etc_hosts: []
 #  - "10.128.64.143 pgbackrest.minio.local minio.local s3.eu-west-3.amazonaws.com"  # example (MinIO)
 #  - ""
 
-ntp_enabled: false # or 'true' if you want to install and configure the ntp service
-ntp_servers: []
+ntp_enabled: true # or 'true' if you want to install and configure the ntp service
+ntp_servers:
 #  - "10.128.64.44"
 #  - "10.128.64.45"
+  - "time.google.com"  # Google Public NTP
+  - "us.pool.ntp.org"  # NTP Pool Project
 
-timezone: ""
+timezone: "America/New_York"
 # timezone: "Etc/UTC"
 # timezone: "America/New_York"
 # timezone: "Europe/Moscow"
@@ -1007,6 +1031,8 @@ apt_repository:
 #  - repo: "deb https://deb.debian.org/debian/ {{ ansible_distribution_release }} main"
 #  - repo: "deb https://deb.debian.org/debian/ {{ ansible_distribution_release }}-updates main"
 #  - repo: "deb https://security.debian.org/debian-security/ {{ ansible_distribution_release }}/updates main"
+  - repo: "deb https://repo.pigsty.io/apt/pgsql/{{ ansible_distribution_release }} {{ ansible_distribution_release }} main"  # Pigsty apt repository
+    key: "https://repo.pigsty.io/key"  # Pigsty apt repository key
 
 # RedHat
 yum_repository: []
@@ -1035,6 +1061,14 @@ postgresql_os_specific_packages:
 #   - postgresql-{{ postgresql_version }}-pgvector
 #   - postgresql-{{ postgresql_version }}-pgaudit
 #   - postgresql-{{ postgresql_version }}-partman
+    - timescaledb-2-postgresql-{{ postgresql_version }}
+    - timescaledb-toolkit-postgresql-{{ postgresql_version }}
+    - postgresql-{{ postgresql_version }}-pg-timeseries
+    - postgresql-{{ postgresql_version }}-cron
+    - postgresql-{{ postgresql_version }}-pg-task
+    - postgresql-{{ postgresql_version }}-pg-later
+    - postgresql-{{ postgresql_version }}-pg-background
+    - postgresql-{{ postgresql_version }}-pg-stat-monitor
   RedHat:
     - postgresql{{ postgresql_version }}
     - postgresql{{ postgresql_version }}-server
@@ -1095,7 +1129,7 @@ system_packages:
   - tar
   - zstd
 
-install_perf: false # or 'true' to install "perf" (Linux profiling with performance counters) and "FlameGraph".
+install_perf: true # or 'true' to install "perf" (Linux profiling with performance counters) and "FlameGraph".
 
 # RedHat
 # The glibc-langpack package includes the basic information required to support the language in your applications.
