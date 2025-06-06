@@ -5,7 +5,92 @@ postgresql_data_dir: "/var/lib/postgresql/{{ postgresql_version }}/main"
 cluster_vip: "192.168.68.100"
 with_haproxy_load_balancing: true
 dcs_type: "etcd"
-patroni_etcd_hosts: []
+
+############################################################
+# Patroni parameters
+############################################################
+
 patroni_restapi_listen_addr: "0.0.0.0" # Listen on all interfaces. Or use "{{ inventory_hostname }}" to listen on a specific IP address.
 patroni_restapi_port: 8008
 patroni_restapi_username: "patroni"
+patroni_restapi_password: "" # If not defined, a password will be generated automatically during deployment.
+patroni_restapi_request_queue_size: 5
+patroni_ttl: 30
+patroni_loop_wait: 10
+patroni_retry_timeout: 10
+patroni_master_start_timeout: 300
+patroni_maximum_lag_on_failover: 1048576 # (1MB) the maximum bytes a follower may lag to be able to participate in leader election.
+patroni_maximum_lag_on_replica: "100MB" # the maximum of lag that replica can be in order to be available for read-only queries.
+
+# https://patroni.readthedocs.io/en/latest/yaml_configuration.html#postgresql
+patroni_callbacks: []
+#  - {action: "on_role_change", script: ""}
+#  - {action: "on_stop", script: ""}
+#  - {action: "on_restart", script: ""}
+#  - {action: "on_reload", script: ""}
+#  - {action: "on_role_change", script: ""}
+
+# https://patroni.readthedocs.io/en/latest/replica_bootstrap.html#standby-cluster
+# Requirements:
+# 1. the cluster name for Standby Cluster must be unique ('patroni_cluster_name' variable)
+# 2. the IP addresses (or network) of the Standby Cluster servers must be added to the pg_hba.conf of the Main Cluster ('postgresql_pg_hba' variable).
+patroni_standby_cluster:
+  host: "" # an address of remote master
+  port: "5432" # a port of remote master
+#  primary_slot_name: ""  # which slot on the remote master to use for replication (optional)
+#  restore_command: ""  # command to restore WAL records from the remote master to standby leader (optional)
+#  recovery_min_apply_delay: ""  # how long to wait before actually apply WAL records on a standby leader (optional)
+
+# Permanent replication slots.
+# These slots will be preserved during switchover/failover.
+# https://patroni.readthedocs.io/en/latest/dynamic_configuration.html
+patroni_slots: []
+#  - slot: "logical_replication_slot" # the name of the permanent replication slot.
+#    type: "logical" # the type of slot. Could be 'physical' or 'logical' (if the slot is logical, you have to define 'database' and 'plugin').
+#    plugin: "pgoutput" # the plugin name for the logical slot.
+#    database: "postgres" # the database name where logical slots should be created.
+#  - slot: "test_logical_replication_slot"
+#    type: "logical"
+#    plugin: "pgoutput"
+#    database: "test"
+
+patroni_log_destination: logfile # or 'stderr'
+# if patroni_log_destination: logfile
+patroni_log_dir: /var/log/patroni
+patroni_log_level: warning
+patroni_log_traceback_level: error
+patroni_log_format: "%(asctime)s %(levelname)s: %(message)s"
+patroni_log_dateformat: ""
+patroni_log_max_queue_size: 1000
+patroni_log_file_num: 4
+patroni_log_file_size: 25000000 # bytes
+patroni_log_loggers_patroni_postmaster: warning
+patroni_log_loggers_urllib3: warning # or 'debug'
+
+patroni_watchdog_mode: automatic # or 'off', 'required'
+patroni_watchdog_device: /dev/watchdog
+
+patroni_postgresql_use_pg_rewind: true # or 'false'
+# try to use pg_rewind on the former leader when it joins cluster as a replica.
+
+patroni_remove_data_directory_on_rewind_failure: false # or 'true' (if use_pg_rewind: 'true')
+# avoid removing the data directory on an unsuccessful rewind
+# if 'true', Patroni will remove the PostgreSQL data directory and recreate the replica.
+
+patroni_remove_data_directory_on_diverged_timelines: false # or 'true'
+# if 'true', Patroni will remove the PostgreSQL data directory and recreate the replica
+# if it notices that timelines are diverging and the former master can not start streaming from the new master.
+
+############################################################
+# Backup and Restore
+############################################################
+
+# https://patroni.readthedocs.io/en/latest/replica_bootstrap.html#bootstrap
+patroni_cluster_bootstrap_method: "initdb" # or "wal-g", "pgbackrest", "pg_probackup"
+
+# https://patroni.readthedocs.io/en/latest/replica_bootstrap.html#building-replicas
+patroni_create_replica_methods:
+  #  - pgbackrest
+  #  - wal_g
+  #  - pg_probackup
+  - basebackup
