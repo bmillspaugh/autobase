@@ -258,14 +258,14 @@ postgresql_users:
 #  - { name: "", password: "", flags: "NOLOGIN" }
 
 # List of databases to be created
-postgresql_databases:
+postgresql_databases: []
 #  - { db: "mydatabase", encoding: "UTF8", lc_collate: "ru_RU.UTF-8", lc_ctype: "ru_RU.UTF-8", owner: "mydb-user" }
 #  - { db: "mydatabase2", encoding: "UTF8", lc_collate: "ru_RU.UTF-8", lc_ctype: "ru_RU.UTF-8", owner: "mydb-user", conn_limit: "50" }
 #  - { db: "", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "" }
 #  - { db: "", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "" }
-  - { name: "awareauth", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "postgres" }
-  - { name: "awareasset", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "postgres" }
-  - { name: "awareiot", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "postgres" }
+#  - { name: "awareauth", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "postgres" }
+#  - { name: "awareasset", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "postgres" }
+#  - { name: "awareiot", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "postgres" }
 
 # List of schemas to be created
 postgresql_schemas: []
@@ -297,7 +297,7 @@ postgresql_extensions: []
 
 # Example PostgreSQL parameters (stored in DCS)
 postgresql_parameters:
-  - { option: "max_connections", value: "1001" } # the actual limit is enforced at the connection pooler level (pool_size)
+  - { option: "max_connections", value: "1000" } # the actual limit is enforced at the connection pooler level (pool_size)
   - { option: "superuser_reserved_connections", value: "5" }
   - { option: "password_encryption", value: "{{ postgresql_password_encryption_algorithm }}" }
   - { option: "ssl", value: "{{ 'on' if tls_cert_generate | bool else 'off' }}" }
@@ -787,23 +787,27 @@ netdata_conf:
 ############################################################
 
 # DNS servers (/etc/resolv.conf)
-nameservers: []
+nameservers:
 #  - "8.8.8.8"  # example (Google Public DNS)
 #  - "9.9.9.9"  # (Quad9 Public DNS)
+  - "8.8.8.8"
+  - "8.8.4.4"
 
 # /etc/hosts (optional)
 etc_hosts: []
 #  - "10.128.64.143 pgbackrest.minio.local minio.local s3.eu-west-3.amazonaws.com"  # example (MinIO)
 #  - ""
 
-ntp_enabled: false # or 'true' if you want to install and configure the ntp service
-ntp_servers: []
+ntp_enabled: true # or 'true' if you want to install and configure the ntp service
+ntp_servers:
 #  - "10.128.64.44"
 #  - "10.128.64.45"
+  - "time.google.com"
+  - "us.pool.ntp.org"
 
-timezone: ""
+# timezone: ""
 # timezone: "Etc/UTC"
-# timezone: "America/New_York"
+timezone: "America/New_York"
 # timezone: "Europe/Moscow"
 # timezone: "Europe/Berlin"
 
@@ -1030,7 +1034,7 @@ postgresql_os_specific_packages:
     - postgresql-server-dev-{{ postgresql_version }}
     - postgresql-{{ postgresql_version }}-dbgsym
 #   - postgresql-{{ postgresql_version }}-repack
-#   - postgresql-{{ postgresql_version }}-cron
+    - postgresql-{{ postgresql_version }}-cron
 #   - postgresql-{{ postgresql_version }}-pg-stat-kcache
 #   - postgresql-{{ postgresql_version }}-pg-wait-sampling
 #   - postgresql-{{ postgresql_version }}-postgis-3
