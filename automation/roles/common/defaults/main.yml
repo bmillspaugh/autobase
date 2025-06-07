@@ -10,7 +10,7 @@ proxy_env: {} # yamllint disable rule:braces
 # Main cluster variables
 ############################################################
 
-patroni_cluster_name: "pgcluster1" # the cluster name (must be unique for each cluster)
+patroni_cluster_name: "pgcluster2" # the cluster name (must be unique for each cluster)
 
 patroni_superuser_username: "postgres"
 patroni_superuser_password: "" # Please specify a password. If not defined, will be generated automatically during deployment.
