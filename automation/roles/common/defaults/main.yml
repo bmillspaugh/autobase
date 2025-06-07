@@ -297,7 +297,7 @@ postgresql_extensions: []
 
 # Example PostgreSQL parameters (stored in DCS)
 postgresql_parameters:
-  - { option: "max_connections", value: "1000" } # the actual limit is enforced at the connection pooler level (pool_size)
+  - { option: "max_connections", value: "1001" } # the actual limit is enforced at the connection pooler level (pool_size)
   - { option: "superuser_reserved_connections", value: "5" }
   - { option: "password_encryption", value: "{{ postgresql_password_encryption_algorithm }}" }
   - { option: "ssl", value: "{{ 'on' if tls_cert_generate | bool else 'off' }}" }
@@ -396,7 +396,7 @@ postgresql_parameters:
 # Set this variable to 'true' if you want the cluster to be automatically restarted
 # after changing the 'postgresql_parameters' variable that requires a restart in the 'config_pgcluster.yml' playbook.
 # By default, the cluster will not be automatically restarted.
-pending_restart: false
+pending_restart: true
 
 # specify additional hosts that will be added to the pg_hba.conf
 postgresql_pg_hba:
