@@ -10,7 +10,7 @@ proxy_env: {} # yamllint disable rule:braces
 # Main cluster variables
 ############################################################
 
-patroni_cluster_name: "postgres-cluster" # the cluster name (must be unique for each cluster)
+patroni_cluster_name: "pgcluster1" # the cluster name (must be unique for each cluster)
 
 patroni_superuser_username: "postgres"
 patroni_superuser_password: "" # Please specify a password. If not defined, will be generated automatically during deployment.
@@ -22,7 +22,7 @@ synchronous_mode_strict: false # if 'true' then block all client writes to the m
 synchronous_node_count: 1 # number of synchronous standby databases
 
 # Load Balancing
-with_haproxy_load_balancing: false # or 'true' if you want to install and configure the HAProxy load balancers
+with_haproxy_load_balancing: true # or 'true' if you want to install and configure the HAProxy load balancers
 haproxy_listen_port:
   master: 5000
   replicas: 5001
@@ -73,7 +73,7 @@ haproxy_timeout:
 #  \"request_size\":%U\
 #  }"
 
-cluster_vip: "" # IP address for client access to the databases in the cluster (optional).
+cluster_vip: "192.168.68.100" # IP address for client access to the databases in the cluster (optional).
 vip_interface: "{{ ansible_default_ipv4.interface }}" # interface name (e.g., "ens32").
 # Note: VIP-based solutions such as keepalived or vip-manager may not function correctly in cloud environments.
 
@@ -258,11 +258,14 @@ postgresql_users:
 #  - { name: "", password: "", flags: "NOLOGIN" }
 
 # List of databases to be created
-postgresql_databases: []
+postgresql_databases:
 #  - { db: "mydatabase", encoding: "UTF8", lc_collate: "ru_RU.UTF-8", lc_ctype: "ru_RU.UTF-8", owner: "mydb-user" }
 #  - { db: "mydatabase2", encoding: "UTF8", lc_collate: "ru_RU.UTF-8", lc_ctype: "ru_RU.UTF-8", owner: "mydb-user", conn_limit: "50" }
 #  - { db: "", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "" }
 #  - { db: "", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "" }
+  - { name: "awareauth", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "postgres" }
+  - { name: "awareasset", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "postgres" }
+  - { name: "awareiot", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "postgres" }
 
 # List of schemas to be created
 postgresql_schemas: []
