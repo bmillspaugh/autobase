@@ -284,13 +284,13 @@ postgresql_privs: []
 #  - { role: "invnatom_ms", privs: "EXECUTE", type: "default_privs", db: "invnatom_db", schema: "invnatom", objs: "FUNCTIONS", target_roles: "invnatom_cd" }
 
 # List of database extensions to be created
-postgresql_extensions: []
+postgresql_extensions:
 #  - { ext: "pg_stat_statements", db: "postgres" }
 #  - { ext: "pg_stat_statements", db: "mydatabase" }
 #  - { ext: "pg_stat_statements", db: "mydatabase", schema: "myschema" }
 #  - { ext: "pg_stat_statements", db: "" }
 #  - { ext: "pg_stat_statements", db: "" }
-#  - { ext: "pg_repack", db: "" }  # postgresql-<version>-repack package is required
+   - { ext: "pg_repack", db: "postgres" }  # postgresql-<version>-repack package is required
 #  - { ext: "pg_stat_kcache", db: "" }  # postgresql-<version>-pg-stat-kcache package is required
 #  - { ext: "", db: "" }
 #  - { ext: "", db: "" }
@@ -1033,7 +1033,7 @@ postgresql_os_specific_packages:
     - postgresql-contrib-{{ postgresql_version }}
     - postgresql-server-dev-{{ postgresql_version }}
     - postgresql-{{ postgresql_version }}-dbgsym
-#   - postgresql-{{ postgresql_version }}-repack
+    - postgresql-{{ postgresql_version }}-repack
     - postgresql-{{ postgresql_version }}-cron
 #   - postgresql-{{ postgresql_version }}-pg-stat-kcache
 #   - postgresql-{{ postgresql_version }}-pg-wait-sampling
