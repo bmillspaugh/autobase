@@ -4,16 +4,16 @@
 192.168.68.103
 
 [balancers]
-192.168.68.101
-192.168.68.102
-192.168.68.103
+192.168.68.101 balancer_tags="datacenter=dc1,replica_type=sync"
+192.168.68.102 balancer_tags="datacenter=dc1,replica_type=sync"
+192.168.68.103 balancer_tags="datacenter=dc1,replica_type=async"
 
 [master]
-192.168.68.101 hostname=pghost1 postgresql_exists=false
+192.168.68.101 hostname=pghost1 postgresql_exists=false patroni_tags="datacenter=dc1,replica_type=sync"
 
 [replica]
-192.168.68.102 hostname=pghost2 postgresql_exists=false
-192.168.68.103 hostname=pghost3 postgresql_exists=false
+192.168.68.102 hostname=pghost2 postgresql_exists=false patroni_tags="datacenter=dc1,replica_type=sync"
+192.168.68.103 hostname=pghost3 postgresql_exists=false patroni_tags="datacenter=dc1,replica_type=async"
 
 [postgres_cluster:children]
 master
