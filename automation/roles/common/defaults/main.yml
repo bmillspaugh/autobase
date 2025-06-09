@@ -1131,7 +1131,7 @@ system_packages:
   - tar
   - zstd
 
-install_perf: false # or 'true' to install "perf" (Linux profiling with performance counters) and "FlameGraph".
+install_perf: true # or 'true' to install "perf" (Linux profiling with performance counters) and "FlameGraph".
 
 # RedHat
 # The glibc-langpack package includes the basic information required to support the language in your applications.
