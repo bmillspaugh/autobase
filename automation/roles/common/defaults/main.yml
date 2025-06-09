@@ -17,7 +17,7 @@ patroni_superuser_password: "" # Please specify a password. If not defined, will
 patroni_replication_username: "replicator"
 patroni_replication_password: "" # Please specify a password. If not defined, will be generated automatically during deployment.
 
-synchronous_mode: false # or 'true' for enable synchronous database replication
+synchronous_mode: true # or 'true' for enable synchronous database replication
 synchronous_mode_strict: false # if 'true' then block all client writes to the master, when a synchronous replica is not available
 synchronous_node_count: 1 # number of synchronous standby databases
 
@@ -31,10 +31,10 @@ haproxy_listen_port:
   # The following ('_direct') ports are used for direct connections to the PostgreSQL database,
   # bypassing the PgBouncer connection pool (if 'pgbouncer_install' is 'true').
   # Uncomment the relevant lines if you need to set up direct connections.
-  #  master_direct: 6000
-  #  replicas_direct: 6001
-  #  replicas_sync_direct: 6002
-  #  replicas_async_direct: 6003
+  master_direct: 6000
+  replicas_direct: 6001
+  replicas_sync_direct: 6002
+  replicas_async_direct: 6003
   stats: 7000
 haproxy_maxconn:
   global: 100000
@@ -256,9 +256,12 @@ postgresql_users:
 #  - { name: "", password: "", flags: "NOSUPERUSER" }
 #  - { name: "", password: "", flags: "NOSUPERUSER" }
 #  - { name: "", password: "", flags: "NOLOGIN" }
+  - { name: "sqlinsertjobs", password: "sqlinsertjobs", flags: "LOGIN", role: "pg_write_all_data" }
+  - { name: "abmonitor", password: "abmonitor", flags: "LOGIN", role: "pg_monitor" } # monitoring Service Account
+  - { name: "ben", password: "ben", flags: "SUPERUSER" }
 
 # List of databases to be created
-postgresql_databases: []
+postgresql_databases:
 #  - { db: "mydatabase", encoding: "UTF8", lc_collate: "ru_RU.UTF-8", lc_ctype: "ru_RU.UTF-8", owner: "mydb-user" }
 #  - { db: "mydatabase2", encoding: "UTF8", lc_collate: "ru_RU.UTF-8", lc_ctype: "ru_RU.UTF-8", owner: "mydb-user", conn_limit: "50" }
 #  - { db: "", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "" }
@@ -266,6 +269,9 @@ postgresql_databases: []
 #  - { name: "awareauth", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "postgres" }
 #  - { name: "awareasset", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "postgres" }
 #  - { name: "awareiot", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "postgres" }
+  - { db: "awareauth", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "postgres" }
+  - { db: "awareasset", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "postgres" }
+  - { db: "awareiot", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "postgres" }
 
 # List of schemas to be created
 postgresql_schemas: []
@@ -274,7 +280,7 @@ postgresql_schemas: []
 # List of privileges to be granted or revoked
 # https://docs.ansible.com/ansible/latest/collections/community/postgresql/postgresql_privs_module.html#examples
 # The db (which is the database to connect to) and role parameters are required
-postgresql_privs: []
+postgresql_privs:
 #  - { role: "test", privs: "SELECT,INSERT,UPDATE", type: "table", db: "test2", objs: "test" }  # grant SELECT, INSERT, UPDATE on a table to role test
 #  - { role: "test-user", privs: "ALL", type: "database", db: "test-db", objs: "test-db" }  # grant ALL on a database to role test-user
 #  - { role: "mydb-user", privs: "SELECT", type: "table", db: "mydb", objs: "my_table", schema: "my_schema" }  # grant SELECT on a table and schema
@@ -282,6 +288,7 @@ postgresql_privs: []
 #  - { role: "user, privs: "SELECT", type: "table", db: "mydb", objs: "table2", schema: "schema2", state: "absent" }  # revoke SELECT on a table2 and schema2
 #  - { role: "test, test2", privs: "CREATE", type: "database", db: "test2", objs: "test2" }  # grant CREATE on a database test2 to role test and test2
 #  - { role: "invnatom_ms", privs: "EXECUTE", type: "default_privs", db: "invnatom_db", schema: "invnatom", objs: "FUNCTIONS", target_roles: "invnatom_cd" }
+  - { role: "datajobs", privs: "SELECT,INSERT,UPDATE", type: "database", db: "awareiot", objs: "awareiot" }
 
 # List of database extensions to be created
 postgresql_extensions:
@@ -290,10 +297,20 @@ postgresql_extensions:
 #  - { ext: "pg_stat_statements", db: "mydatabase", schema: "myschema" }
 #  - { ext: "pg_stat_statements", db: "" }
 #  - { ext: "pg_stat_statements", db: "" }
-   - { ext: "pg_repack", db: "postgres" }  # postgresql-<version>-repack package is required
+  - { ext: "pg_repack", db: "postgres" }  # postgresql-<version>-repack package is required
 #  - { ext: "pg_stat_kcache", db: "" }  # postgresql-<version>-pg-stat-kcache package is required
 #  - { ext: "", db: "" }
 #  - { ext: "", db: "" }
+  - { ext: "timescaledb", db: "awareiot" }
+  - { ext: "timescaledb_toolkit", db: "awareiot" }
+  - { ext: "timeseries", db: "awareiot" }
+  - { ext: "pg_cron", db: "postgres" }
+  - { ext: "pg_task", db: "postgres" }
+  - { ext: "pg_later", db: "postgres" }
+  - { ext: "pg_background", db: "postgres" }
+  - { ext: "pg_stat_monitor", db: "awareiot" }
+  - { ext: "pg_stat_statements", db: "awareiot" }
+  - { ext: "auto_explain", db: "awareiot" }
 
 # Example PostgreSQL parameters (stored in DCS)
 postgresql_parameters:
@@ -467,6 +484,9 @@ pgbouncer_pools:
 #  - { name: "mydatabase", dbname: "mydatabase", pool_parameters: "pool_size=20 pool_mode=transaction" }
 #  - { name: "", dbname: "", pool_parameters: "" }
 #  - { name: "", dbname: "", pool_parameters: "" }
+  - { name: "awareauth", dbname: "awareauth", pool_parameters: "" }
+  - { name: "awareasset", dbname: "awareasset", pool_parameters: "" }
+  - { name: "awareiot", dbname: "awareiot", pool_parameters: "" }
 
 ############################################################
 # Patroni parameters
