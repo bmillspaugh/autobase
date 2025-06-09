@@ -1037,7 +1037,7 @@ apt_repository:
   - repo: "deb https://repo.pigsty.io/apt/pgsql/{{ ansible_distribution_release }} {{ ansible_distribution_release }} main"  # Pigsty apt repository
     key: "https://repo.pigsty.io/key"  # Pigsty apt repository key
   - repo: "deb http://ppa.launchpad.net/timescale/timescaledb-ppa/ubuntu {{ ansible_distribution_release }} main" # timescaledb PPA repository
-    key: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x55ee6bf7698e3d58d72c0dd9ecb3980cc59e610b" # timescaledb PPA repository key
+    key: "https://timescalereleases.blob.core.windows.net/apt/KEY.gpg" # timescaledb PPA repository key
 
 # RedHat
 yum_repository: []
