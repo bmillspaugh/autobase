@@ -1044,7 +1044,7 @@ apt_repository:
     key: "https://repo.pigsty.io/key"  # Pigsty apt repository key
   - repo: "deb https://packagecloud.io/timescale/timescaledb/ubuntu/ {{ ansible_distribution_release }} main" # TimescaleDB apt repository
     key: "https://packagecloud.io/timescale/timescaledb/gpgkey" # TimescaleDB apt repository key
-  - repo: "deb https://repos.citusdata.com/community/ubuntu/ {{ ansible_distribution_release }} main" # CitusDB apt repository
+  - repo: "deb https://repos.citusdata.com/community/ {{ ansible_distribution_release }} main" # CitusDB apt repository
     key: "https://repos.citusdata.com/community/ubuntu/gpgkey" # CitusDB apt repository key
 
 # gpg_key_url="https://repos.citusdata.com/${repo_name}/gpgkey"
