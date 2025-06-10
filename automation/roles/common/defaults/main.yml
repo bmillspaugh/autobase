@@ -1070,12 +1070,12 @@ postgresql_os_specific_packages:
     - postgresql-{{ postgresql_version }}-repack
     - postgresql-{{ postgresql_version }}-cron
     - postgresql-{{ postgresql_version }}-pg-stat-kcache
-#   - postgresql-{{ postgresql_version }}-pg-wait-sampling
+    - postgresql-{{ postgresql_version }}-pg-wait-sampling
 #   - postgresql-{{ postgresql_version }}-postgis-3
 #   - postgresql-{{ postgresql_version }}-pgrouting
 #   - postgresql-{{ postgresql_version }}-pgvector
 #   - postgresql-{{ postgresql_version }}-pgaudit
-#   - postgresql-{{ postgresql_version }}-partman
+    - postgresql-{{ postgresql_version }}-partman
     - timescaledb-2-postgresql-{{ postgresql_version }}
     - timescaledb-toolkit-postgresql-{{ postgresql_version }}
     - postgresql-{{ postgresql_version }}-pg-timeseries
@@ -1085,8 +1085,6 @@ postgresql_os_specific_packages:
     - postgresql-{{ postgresql_version }}-pg-background
     - postgresql-{{ postgresql_version }}-pg-stat-monitor
     - postgresql-{{ postgresql_version }}-citus-13.0
-    - postgresql-{{ postgresql_version }}-partman
-    - postgresql-{{ postgresql_version }}-pg-wait-sampling
   RedHat:
     - postgresql{{ postgresql_version }}
     - postgresql{{ postgresql_version }}-server
