@@ -304,7 +304,7 @@ postgresql_extensions:
 #  - { ext: "", db: "" }
   - { ext: "timescaledb", db: "awareiot" }
   - { ext: "timescaledb_toolkit", db: "awareiot" }
-  - { ext: "columnar", db: "awareiot" } # required for timeseries extension
+  - { ext: "citus_columnar", db: "awareiot" } # required for timeseries extension
   - { ext: "timeseries", db: "awareiot" }
   - { ext: "pg_cron", db: "postgres", schema: "pg_catalog" }
   - { ext: "pg_task", db: "postgres" }
@@ -1075,6 +1075,7 @@ postgresql_os_specific_packages:
     - postgresql-{{ postgresql_version }}-pg-later
     - postgresql-{{ postgresql_version }}-pg-background
     - postgresql-{{ postgresql_version }}-pg-stat-monitor
+    - postgresql-{{ postgresql_version }}-citus-13.0
   RedHat:
     - postgresql{{ postgresql_version }}
     - postgresql{{ postgresql_version }}-server
