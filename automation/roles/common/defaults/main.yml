@@ -259,6 +259,7 @@ postgresql_users:
   - { name: "sqlinsertjobs", password: "sqlinsertjobs", flags: "LOGIN", role: "pg_write_all_data" }
   - { name: "abmonitor", password: "abmonitor", flags: "LOGIN", role: "pg_monitor" } # monitoring Service Account
   - { name: "ben", password: "ben", flags: "SUPERUSER" }
+  - { name: "datajobs", flags: "NOLOGIN" }
 
 # List of databases to be created
 postgresql_databases:
