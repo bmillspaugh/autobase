@@ -279,6 +279,7 @@ postgresql_schemas:
 #  - { schema: "myschema", db: "mydatabase", owner: "mydb-user" }
   - { schema: "pg_catalog", db: "postgres", owner: "postgres" }
   - { schema: "pglater", db: "postgres", owner: "postgres" }
+  - { schema: "pgmq", db: "postgres", owner: "postgres" }
 
 # List of privileges to be granted or revoked
 # https://docs.ansible.com/ansible/latest/collections/community/postgresql/postgresql_privs_module.html#examples
