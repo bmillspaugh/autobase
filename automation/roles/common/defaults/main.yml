@@ -305,16 +305,17 @@ postgresql_extensions:
 #  - { ext: "", db: "" }
   - { ext: "timescaledb", db: "awareiot" }
   - { ext: "timescaledb_toolkit", db: "awareiot" }
-  - { ext: "citus", db: "awareiot", schema: "pg_catalog" }
+#  - { ext: "citus", db: "awareiot", schema: "pg_catalog" }
   - { ext: "citus_columnar", db: "awareiot", schema: "pg_catalog" } # required for timeseries extension
   - { ext: "timeseries", db: "awareiot" }
-  - { ext: "pg_cron", db: "postgres", schema: "pg_catalog" }
-  - { ext: "pg_task", db: "postgres" }
+#  - { ext: "pg_cron", db: "postgres", schema: "pg_catalog" }
+#  - { ext: "pg_task", db: "postgres" }
+  - { ext: "pgmq", db: "postgres" }
   - { ext: "pg_later", db: "postgres", schema: "pglater" }
   - { ext: "pg_background", db: "postgres" }
   - { ext: "pg_stat_monitor", db: "awareiot" }
   - { ext: "pg_stat_statements", db: "awareiot" }
-  - { ext: "pg_stat_kcache", db: "awareiot" }  # postgresql-<version>-pg-stat-kcache package is required
+#  - { ext: "pg_stat_kcache", db: "awareiot" }  # postgresql-<version>-pg-stat-kcache package is required
 #  - { ext: "auto_explain", db: "" }
   - { ext: "pg_partman", db: "awareiot" }
 
@@ -371,7 +372,7 @@ postgresql_parameters:
   - { option: "hot_standby_feedback", value: "on" } # allows feedback from a hot standby to the primary that will avoid query conflicts
   - { option: "max_standby_streaming_delay", value: "30s" }
   - { option: "wal_receiver_status_interval", value: "10s" }
-  - { option: "shared_preload_libraries", value: "citus,pg_stat_statements,pg_stat_kcache,pg_wait_sampling,auto_explain,timescaledb" } # pg_stat_kcache, pg_wait_sampling are recommended
+  - { option: "shared_preload_libraries", value: "citus,pg_stat_statements,pg_stat_kcache,pg_wait_sampling,auto_explain,timescaledb,pg_task,pg_cron" } # pg_stat_kcache, pg_wait_sampling are recommended
   - { option: "pg_stat_statements.max", value: "10000" }
   - { option: "pg_stat_statements.track", value: "all" }
   - { option: "pg_stat_statements.track_planning", value: "true" }
@@ -1081,11 +1082,13 @@ postgresql_os_specific_packages:
     - timescaledb-toolkit-postgresql-{{ postgresql_version }}
     - postgresql-{{ postgresql_version }}-pg-timeseries
     - postgresql-{{ postgresql_version }}-pg-task
+    - postgresql-{{ postgresql_version }}-pgmq
     - postgresql-{{ postgresql_version }}-pg-later
     - postgresql-{{ postgresql_version }}-pg-background
     - postgresql-{{ postgresql_version }}-pg-stat-monitor
     - postgresql-{{ postgresql_version }}-citus-13.0
     - postgresql-{{ postgresql_version }}-partman
+    - postgresql-{{ postgresql_version }}-pg-wait-sampling
   RedHat:
     - postgresql{{ postgresql_version }}
     - postgresql{{ postgresql_version }}-server
