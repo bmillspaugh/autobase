@@ -301,11 +301,12 @@ postgresql_extensions:
 #  - { ext: "pg_stat_statements", db: "" }
 #  - { ext: "pg_stat_statements", db: "" }
   - { ext: "pg_repack", db: "postgres" }  # postgresql-<version>-repack package is required
-#  - { ext: "pg_stat_kcache", db: "" }  # postgresql-<version>-pg-stat-kcache package is required
+  - { ext: "pg_stat_kcache", db: "postgres" }  # postgresql-<version>-pg-stat-kcache package is required
 #  - { ext: "", db: "" }
 #  - { ext: "", db: "" }
   - { ext: "timescaledb", db: "awareiot" }
   - { ext: "timescaledb_toolkit", db: "awareiot" }
+  - { ext: "citus", db: "awareiot" }
   - { ext: "citus_columnar", db: "awareiot" } # required for timeseries extension
   - { ext: "timeseries", db: "awareiot" }
   - { ext: "pg_cron", db: "postgres", schema: "pg_catalog" }
@@ -315,6 +316,7 @@ postgresql_extensions:
   - { ext: "pg_stat_monitor", db: "awareiot" }
   - { ext: "pg_stat_statements", db: "awareiot" }
   - { ext: "auto_explain", db: "awareiot" }
+  - { ext: "pg_partman", db: "awareiot" }
 
 # Example PostgreSQL parameters (stored in DCS)
 postgresql_parameters:
@@ -1042,6 +1044,11 @@ apt_repository:
     key: "https://repo.pigsty.io/key"  # Pigsty apt repository key
   - repo: "deb https://packagecloud.io/timescale/timescaledb/ubuntu/ {{ ansible_distribution_release }} main" # TimescaleDB apt repository
     key: "https://packagecloud.io/timescale/timescaledb/gpgkey" # TimescaleDB apt repository key
+  - repo: "deb https://repos.citusdata.com/community/ubuntu/ {{ ansible_distribution_release }} main" # CitusDB apt repository
+    key: "https://repos.citusdata.com/community/ubuntu/gpgkey" # CitusDB apt repository key
+
+# gpg_key_url="https://repos.citusdata.com/${repo_name}/gpgkey"
+#  apt_config_url="https://repos.citusdata.com/${repo_name}/config_file.list?os=${os}&dist=${dist}&source=script"
 
 # RedHat
 yum_repository: []
@@ -1063,7 +1070,7 @@ postgresql_os_specific_packages:
     - postgresql-{{ postgresql_version }}-dbgsym
     - postgresql-{{ postgresql_version }}-repack
     - postgresql-{{ postgresql_version }}-cron
-#   - postgresql-{{ postgresql_version }}-pg-stat-kcache
+    - postgresql-{{ postgresql_version }}-pg-stat-kcache
 #   - postgresql-{{ postgresql_version }}-pg-wait-sampling
 #   - postgresql-{{ postgresql_version }}-postgis-3
 #   - postgresql-{{ postgresql_version }}-pgrouting
@@ -1078,6 +1085,7 @@ postgresql_os_specific_packages:
     - postgresql-{{ postgresql_version }}-pg-background
     - postgresql-{{ postgresql_version }}-pg-stat-monitor
     - postgresql-{{ postgresql_version }}-citus-13.0
+    - postgresql-{{ postgresql_version }}-partman
   RedHat:
     - postgresql{{ postgresql_version }}
     - postgresql{{ postgresql_version }}-server
