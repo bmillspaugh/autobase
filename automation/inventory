@@ -9,11 +9,11 @@
 192.168.68.103
 
 [master]
-192.168.68.101 hostname=pghost1 postgresql_exists=false
+192.168.68.103 hostname=pghost3 postgresql_exists=false
 
 [replica]
 192.168.68.102 hostname=pghost2 postgresql_exists=false
-192.168.68.103 hostname=pghost3 postgresql_exists=false
+192.168.68.101 hostname=pghost1 postgresql_exists=false
 
 [pgbackrest]
 192.168.68.101
