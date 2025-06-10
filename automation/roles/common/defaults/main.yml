@@ -308,7 +308,7 @@ postgresql_extensions:
   - { ext: "timescaledb_toolkit", db: "awareiot" }
 #  - { ext: "citus", db: "awareiot", schema: "pg_catalog" }
 #  - { ext: "citus_columnar", db: "awareiot", schema: "pg_catalog" } # required for timeseries extension
-  - { ext: "timeseries", db: "awareiot" }
+#  - { ext: "timeseries", db: "awareiot" }
 #  - { ext: "pg_cron", db: "postgres", schema: "pg_catalog" }
 #  - { ext: "pg_task", db: "postgres" }
   - { ext: "pgmq", db: "postgres", schema: "pgmq" } # PostgreSQL Message Queue (PGMQ) extension
