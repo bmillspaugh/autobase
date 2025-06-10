@@ -304,10 +304,11 @@ postgresql_extensions:
 #  - { ext: "", db: "" }
   - { ext: "timescaledb", db: "awareiot" }
   - { ext: "timescaledb_toolkit", db: "awareiot" }
+  - { ext: "columnar", db: "awareiot" } # required for timeseries extension
   - { ext: "timeseries", db: "awareiot" }
-  - { ext: "pg_cron", db: "postgres" }
+  - { ext: "pg_cron", db: "postgres", schema: "pg_catalog" }
   - { ext: "pg_task", db: "postgres" }
-  - { ext: "pg_later", db: "postgres" }
+  - { ext: "pg_later", db: "postgres", schema: "pglater" }
   - { ext: "pg_background", db: "postgres" }
   - { ext: "pg_stat_monitor", db: "awareiot" }
   - { ext: "pg_stat_statements", db: "awareiot" }
