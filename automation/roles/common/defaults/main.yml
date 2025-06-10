@@ -259,7 +259,7 @@ postgresql_users:
   - { name: "sqlinsertjobs", password: "sqlinsertjobs", flags: "LOGIN", role: "pg_write_all_data" }
   - { name: "abmonitor", password: "abmonitor", flags: "LOGIN", role: "pg_monitor" } # monitoring Service Account
   - { name: "ben", password: "ben", flags: "SUPERUSER" }
-  - { name: "datajobs", flags: "NOLOGIN" }
+  - { name: "datajobs", password: "", flags: "NOLOGIN" }
 
 # List of databases to be created
 postgresql_databases:
@@ -306,8 +306,8 @@ postgresql_extensions:
 #  - { ext: "", db: "" }
   - { ext: "timescaledb", db: "awareiot" }
   - { ext: "timescaledb_toolkit", db: "awareiot" }
-  - { ext: "citus", db: "awareiot" }
-  - { ext: "citus_columnar", db: "awareiot" } # required for timeseries extension
+  - { ext: "citus", db: "awareiot", schema: "pg_catalog" }
+  - { ext: "citus_columnar", db: "awareiot", schema: "pg_catalog" } # required for timeseries extension
   - { ext: "timeseries", db: "awareiot" }
   - { ext: "pg_cron", db: "postgres", schema: "pg_catalog" }
   - { ext: "pg_task", db: "postgres" }
@@ -315,7 +315,7 @@ postgresql_extensions:
   - { ext: "pg_background", db: "postgres" }
   - { ext: "pg_stat_monitor", db: "awareiot" }
   - { ext: "pg_stat_statements", db: "awareiot" }
-  - { ext: "auto_explain", db: "awareiot" }
+  - { ext: "auto_explain", db: "" }
   - { ext: "pg_partman", db: "awareiot" }
 
 # Example PostgreSQL parameters (stored in DCS)
