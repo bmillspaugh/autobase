@@ -275,8 +275,10 @@ postgresql_databases:
   - { db: "awareiot", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "postgres" }
 
 # List of schemas to be created
-postgresql_schemas: []
+postgresql_schemas:
 #  - { schema: "myschema", db: "mydatabase", owner: "mydb-user" }
+  - { schema: "pg_catalog", db: "postgres", owner: "postgres" }
+  - { schema: "pglater", db: "postgres", owner: "postgres" }
 
 # List of privileges to be granted or revoked
 # https://docs.ansible.com/ansible/latest/collections/community/postgresql/postgresql_privs_module.html#examples
