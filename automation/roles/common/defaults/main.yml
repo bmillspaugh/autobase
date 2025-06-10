@@ -1046,13 +1046,8 @@ apt_repository:
     key: "https://repo.pigsty.io/key"  # Pigsty apt repository key
   - repo: "deb https://packagecloud.io/timescale/timescaledb/ubuntu/ {{ ansible_distribution_release }} main" # TimescaleDB apt repository
     key: "https://packagecloud.io/timescale/timescaledb/gpgkey" # TimescaleDB apt repository key
-#  - repo: "deb https://packagecloud.io/citusdata/community/ubuntu/ jammy main" # CitusDB apt repository
-#    key: "https://packagecloud.io/citusdata/community/gpgkey" # CitusDB apt repository key
-  - repo: "deb https://repos.citusdata.com/community/ubuntu/ jammy main" # CitusDB apt repository
+  - repo: "deb https://repos.citusdata.com/community/ubuntu/ jammy main" # CitusDB apt repository - force "jammy" since no Ubuntu 24 support yet (https://github.com/citusdata/packaging/issues/1137)
     key: "https://repos.citusdata.com/community/gpgkey" # CitusDB apt repository key
-
-# gpg_key_url="https://repos.citusdata.com/${repo_name}/gpgkey"
-#  apt_config_url="https://repos.citusdata.com/${repo_name}/config_file.list?os=${os}&dist=${dist}&source=script"
 
 # RedHat
 yum_repository: []
